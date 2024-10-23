@@ -1,4 +1,3 @@
-// src/services/MessageService.ts
 import axios from 'axios';
 
 export interface Message {

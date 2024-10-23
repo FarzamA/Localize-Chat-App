@@ -17,7 +17,7 @@ describe('API Endpoints', () => {
     it('should create a new message and not affect production data', async () => {
       const newMessage = {
         name: 'Test User',
-        message: 'This is a test message - safe for production',
+        message: 'This is a test message',
       };
 
       const res = await request(BASE_URL)
@@ -27,11 +27,11 @@ describe('API Endpoints', () => {
       expect(res.status).toBe(201);  // Ensure it was created successfully
       expect(res.body).toHaveProperty('_id');
       expect(res.body.name).toBe('Test User');
-      expect(res.body.message).toBe('This is a test message - safe for production');
+      expect(res.body.message).toBe('This is a test message');
 
-      // Optionally, clean up by deleting the created test message (if needed)
+      // Clean up by deleting the created test message (if needed)
       await request(BASE_URL)
-        .delete(`/messages/${res.body._id}`);  // Assuming you have a DELETE route for messages
+        .delete(`/messages/${res.body._id}`);  
     });
   });
 });
