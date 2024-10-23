@@ -5,7 +5,7 @@ export class WebSocketServer {
   private io: Server;
 
   constructor(server: any) {
-    this.io = new Server(server, { cors: { origin: '*' } });
+    this.io = new Server(server, { cors: { origin: '*' } }); // Allow any origin for CORS
     this.initializeWebSocketEvents();
   }
 

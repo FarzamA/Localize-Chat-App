@@ -9,4 +9,8 @@ export class MessageService {
     const newMessage = new MessageModel(data);
     return newMessage.save();
   }
+
+  public async deleteMessage(id: string) {
+    return await MessageModel.findByIdAndDelete(id);  // Use Mongoose method to delete by ID
+  }
 }

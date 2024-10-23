@@ -21,13 +21,4 @@ export class App {
   private initializeControllers() {
     this.app.use('/messages', this.messageController.router);
   }
-
-  public listen(port: number) {
-    this.app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-  }
 }
-
-// Export an instance of App for testing purposes
-export default new App().app;
