@@ -1,4 +1,3 @@
-// src/components/Sidebar.tsx
 import React from 'react';
 import { Drawer, List, ListItem, Typography, Divider, Button, Box } from '@mui/material';
 
@@ -8,8 +7,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
-  // Dummy rooms list can be modified later for better functionality
-  const rooms = ['Room 1'];
+  // Dummy rooms list, you can later add more rooms dynamically
+  const rooms = ['Room 1', 'Room 2'];
 
   return (
     <Drawer open={open} onClose={onClose}>
@@ -25,18 +24,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
         {/* List of Rooms */}
         <List>
           {rooms.map((room, index) => (
-            <ListItem key={index} disablePadding>
+            <ListItem
+              key={index}
+              disablePadding
+              sx={
+                room === 'Room 1' // Check if it's "Room 1" and apply custom styles
+                  ? { backgroundColor: '#1976d2', color: '#fff', borderRadius: 1, mb: 1 }
+                  : {}
+              }
+            >
               <Button
                 fullWidth
                 variant="text"
-                sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-                onClick={() => console.log(`Selected: ${room}`)}  
+                sx={{
+                  justifyContent: 'flex-start',
+                  textTransform: 'none',
+                  color: room === 'Room 1' ? '#fff' : 'inherit', // Keep text white if it's "Room 1"
+                }}
+                onClick={() => console.log(`Selected: ${room}`)}
               >
                 {room}
               </Button>
             </ListItem>
           ))}
-        
+
           {/* Disabled Add New Room Button */}
           <ListItem disablePadding>
             <Button

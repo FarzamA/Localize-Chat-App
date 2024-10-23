@@ -16,7 +16,7 @@ const server = http.createServer(appInstance.app);
 const websocketServer = new WebSocketServer(server);
 
 // Mongo URI from environment variables
-const mongoURI = process.env.MONGO_URI || 'your-fallback-mongo-uri';
+const mongoURI = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.DB_NAME}.xrgwa.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.DB_NAME}`
 
 // MongoDB Connection
 mongoose.connect(mongoURI)
