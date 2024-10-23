@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { io, Socket } from 'socket.io-client';  // Import socket.io-client
+import { io, Socket } from 'socket.io-client'; 
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -34,7 +34,7 @@ export const ChatApp: React.FC = () => {
   };
 
   // Create theme based on the current mode
-  const theme = useMemo(
+  const theme = useMemo( // useMemo prevents expensive computations on each re render -- useful here
     () =>
       createTheme({
         palette: {
