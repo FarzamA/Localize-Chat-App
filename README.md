@@ -1,6 +1,14 @@
 # Setup Instructions
 ## Backend
-npx ts-node src/server.ts
+* tsc - to compile typescript files
+* node dist/src/server.js - to launch the server
+* combined to `npm start` script
 
 ## Frontend
-npm start
+* `npm start`
+
+## Testing
+* ViTest
+* Supertest
+* `npm test`
+

@@ -1,2 +1,7 @@
 # dependencies
 /node_modules
+# Environment variables
+.env
+# Compiled Files
+/dist
+package-lock.json
