@@ -30,6 +30,7 @@ npm install
 npm start
 ```
 What this is doing behind the scenes is compiling all of our typescript files and putting them into a new folder called `dist` and launching a `node` server from the compiled files.
+
 5. If the MongoDB setup and backend setup are done correctly you will see the following in your terminal:
 ```bash
 Server is running on port 5000
@@ -73,7 +74,7 @@ rm -rf package-lock.json node_modules
 ```bash
 npm install
 ```
-4. Once the `npm install` command has run, from within the `chat-app-frontend` directory run the following command:
+4. Once the `npm install` command has run, from within the `chat-app-frontend` directory, run the following command:
 ```bash
 npm start
 ```
