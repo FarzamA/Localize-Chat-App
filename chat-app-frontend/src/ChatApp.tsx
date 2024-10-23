@@ -1,6 +1,5 @@
-// src/ChatApp.tsx
-import React, { useState, useMemo } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Button, Container, Box, Switch } from '@mui/material';
+import React, { useState, useEffect, useMemo } from 'react';
+import { AppBar, Toolbar, IconButton, Typography, Button, Container, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -9,17 +8,25 @@ import { MessageService, Message } from './services/MessageService';
 import { Sidebar } from './components/Sidebar';
 import { MessageList } from './components/MessageList';
 import { MessageModal } from './components/MessageModal';
+import Cookies from 'js-cookie';  // Import js-cookie to handle cookies
 
 export const ChatApp: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const messageService = new MessageService();
-  const [darkMode, setDarkMode] = useState(false); // State to manage theme mode
+  
+  // Retrieve the theme mode from the cookie (default to 'light')
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const cookieValue = Cookies.get('theme');
+    return cookieValue === 'dark';
+  });
 
-  // Toggle between light and dark modes
+  // Toggle between light and dark modes and store the preference in a cookie
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    Cookies.set('theme', newMode ? 'dark' : 'light', { expires: 365 });  // Store mode for 365 days
   };
 
   // Create theme based on the current mode
@@ -34,7 +41,7 @@ export const ChatApp: React.FC = () => {
   );
 
   // Fetch messages on component mount
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchMessages = async () => {
       const fetchedMessages = await messageService.fetchMessages();
       setMessages(fetchedMessages);
