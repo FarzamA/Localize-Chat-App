@@ -8,14 +8,14 @@ import { MessageService, Message } from './services/MessageService';
 import { Sidebar } from './components/Sidebar';
 import { MessageList } from './components/MessageList';
 import { MessageModal } from './components/MessageModal';
-import Cookies from 'js-cookie';  // Import js-cookie to handle cookies
+import Cookies from 'js-cookie';
 
 export const ChatApp: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const messageService = new MessageService();
-  
+
   // Retrieve the theme mode from the cookie (default to 'light')
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const cookieValue = Cookies.get('theme');
@@ -26,7 +26,7 @@ export const ChatApp: React.FC = () => {
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    Cookies.set('theme', newMode ? 'dark' : 'light', { expires: 365 });  // Store mode for 365 days
+    Cookies.set('theme', newMode ? 'dark' : 'light', { expires: 365 });
   };
 
   // Create theme based on the current mode
@@ -51,13 +51,17 @@ export const ChatApp: React.FC = () => {
 
   // Handle posting a new message
   const handleNewMessageSubmit = async (name: string, message: string) => {
-    const newMessage = await messageService.postMessage(name, message);
-    setMessages([...messages, newMessage]); // Update the state with the new message
+    try {
+      const newMessage = await messageService.postMessage(name, message);
+      setMessages([...messages, newMessage]); // Update the state with the new message
+      setModalOpen(false); // Close the modal after submitting the message
+    } catch (error) {
+      console.error('Failed to post the message');
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
-      {/* CssBaseline to ensure Material-UI applies the correct theme */}
       <CssBaseline />
 
       <div>

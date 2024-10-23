@@ -12,11 +12,42 @@ export const MessageModal: React.FC<MessageModalProps> = ({ open, onClose, onSub
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
 
+  // State to handle validation errors
+  const [nameError, setNameError] = useState(false);
+  const [messageError, setMessageError] = useState(false);
+  const [nameHelperText, setNameHelperText] = useState('');
+  const [messageHelperText, setMessageHelperText] = useState('');
+
   const handleSubmit = () => {
-    onSubmit(name, message);
-    setName('');
-    setMessage('');
-    onClose();
+    let valid = true;
+
+    // Validate name
+    if (!name) {
+      setNameError(true);
+      setNameHelperText('Name is required');
+      valid = false;
+    } else {
+      setNameError(false);
+      setNameHelperText('');
+    }
+
+    // Validate message
+    if (!message) {
+      setMessageError(true);
+      setMessageHelperText('Message is required');
+      valid = false;
+    } else {
+      setMessageError(false);
+      setMessageHelperText('');
+    }
+
+    if (valid) {
+      // Submit only if both fields are valid
+      onSubmit(name, message);
+      setName(''); // Reset fields after successful submission
+      setMessage('');
+      onClose();   // Close the modal
+    }
   };
 
   return (
@@ -34,13 +65,19 @@ export const MessageModal: React.FC<MessageModalProps> = ({ open, onClose, onSub
         }}
       >
         <Typography variant="h6">Post a New Message</Typography>
+        
+        {/* Name Field */}
         <TextField
           fullWidth
           label="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          error={nameError}
+          helperText={nameHelperText}
           sx={{ mt: 2 }}
         />
+
+        {/* Message Field */}
         <TextField
           fullWidth
           label="Message"
@@ -48,8 +85,12 @@ export const MessageModal: React.FC<MessageModalProps> = ({ open, onClose, onSub
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          error={messageError}
+          helperText={messageHelperText}
           sx={{ mt: 2 }}
         />
+
+        {/* Submit Button */}
         <Button
           variant="contained"
           color="primary"
