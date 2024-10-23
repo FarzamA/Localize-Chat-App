@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { io, Socket } from 'socket.io-client';  // Import socket.io-client
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -9,6 +10,9 @@ import { Sidebar } from './components/Sidebar';
 import { MessageList } from './components/MessageList';
 import { MessageModal } from './components/MessageModal';
 import Cookies from 'js-cookie';
+
+// Initialize the WebSocket connection
+const socket: Socket = io('http://localhost:5000');  
 
 export const ChatApp: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -40,21 +44,34 @@ export const ChatApp: React.FC = () => {
     [darkMode],
   );
 
-  // Fetch messages on component mount
+  // Fetch messages on component mount and listen for WebSocket events
   useEffect(() => {
     const fetchMessages = async () => {
       const fetchedMessages = await messageService.fetchMessages();
       setMessages(fetchedMessages);
     };
     fetchMessages();
+
+    // Listen for new messages broadcasted by WebSocket
+    socket.on('message', (newMessage: Message) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);  // Add new message to chat
+    });
+
+    // Cleanup WebSocket listener when component unmounts
+    return () => {
+      socket.off('message');
+    };
   }, []);
 
   // Handle posting a new message
   const handleNewMessageSubmit = async (name: string, message: string) => {
     try {
       const newMessage = await messageService.postMessage(name, message);
-      setMessages([...messages, newMessage]); // Update the state with the new message
-      setModalOpen(false); // Close the modal after submitting the message
+      setMessages([...messages, newMessage]);  // Update the state with the new message
+      setModalOpen(false);  // Close the modal after submitting the message
+
+      // Emit the new message via WebSocket to other connected clients
+      socket.emit('newMessage', newMessage);
     } catch (error) {
       console.error('Failed to post the message');
     }
