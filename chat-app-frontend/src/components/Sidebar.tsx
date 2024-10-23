@@ -30,12 +30,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
                 fullWidth
                 variant="text"
                 sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-                onClick={() => console.log(`Selected: ${room}`)}  // Replace with actual room selection logic
+                onClick={() => console.log(`Selected: ${room}`)}  
               >
                 {room}
               </Button>
             </ListItem>
           ))}
+        
+          {/* Disabled Add New Room Button */}
+          <ListItem disablePadding>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ justifyContent: 'flex-start', mt: 2, textTransform: 'none' }}
+              disabled
+            >
+              Add New Room
+            </Button>
+          </ListItem>
         </List>
       </Box>
     </Drawer>

@@ -5,7 +5,7 @@ export interface Message {
   _id: string;
   name: string;
   message: string;
-  createdAt: string;
+  timestamp: string;
 }
 
 export class MessageService {

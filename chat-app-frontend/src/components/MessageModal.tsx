@@ -23,7 +23,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({ open, onClose, onSub
 
     // Validate name
     if (!name) {
-      setNameError(true);
+      setNameError(!name);
       setNameHelperText('Name is required');
       valid = false;
     } else {

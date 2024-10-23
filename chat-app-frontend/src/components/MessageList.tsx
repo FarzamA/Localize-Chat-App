@@ -11,14 +11,14 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   return (
     <Box sx={{ mt: 2, maxHeight: '70vh', overflowY: 'auto' }}>
       {messages
-        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .map((message) => (
           <Box key={message._id} sx={{ mb: 2, borderBottom: '1px solid #ddd', pb: 1 }}>
             <Typography variant="body1">
               <strong>{message.name}</strong>: {message.message}
             </Typography>
             <Typography variant="caption" color="textSecondary">
-              {new Date(message.createdAt).toLocaleString()}
+              {new Date(message.timestamp).toLocaleString()}
             </Typography>
           </Box>
         ))}
