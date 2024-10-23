@@ -36,7 +36,7 @@ rm -rf package-lock.json node_modules
 ```bash
 npm install
 ```
-4. Once the `npm install` command has run, from within the `chat-app-backend` directory run the following command:
+4. Once the `npm install` command has run, from within the `chat-app-backend` directory, run the following command:
 ```bash
 npm start
 ```
