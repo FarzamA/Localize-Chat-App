@@ -1,5 +1,15 @@
-# Setup Instructions
+# Chat Application
+
+A real-time chat application built with React (frontend), Node.js/Express (backend), and MongoDB. The app features a simple user interface for chatting in "Room 1" with automatic scrolling, message validation, and dark mode support.
+
+## Prerequisites
+Before you begin, ensure you have met the following requirements:
+- **Node.js**: v14 or higher
+- **npm**: v6 or higher
+- **MongoDB**: A running MongoDB instance, either locally or via MongoDB Atlas
+
 ## Connecting to MongoDB
+
 In order to connect to the MogoDB instance a `.env` file will need to be added into the backend directory with credentials in order to connect to the database. 
 To set this up navigate into the `chat-app-backend` directory and create a new file called `.env` or just paste the one that is provided. This can be done by either running the following two commands:
 ```bash
@@ -15,6 +25,7 @@ DB_NAME=
 ```
 
 ## Backend Setup
+
 1. If not already there, navigate into the `chat-app-backend` directory.
 2. Remove any residual files like `package-lock.json` and the `node_modules` directory.
 This can be done manually or by running the following command from within the `chat-app-backend` directory:
@@ -39,6 +50,7 @@ Connected to MongoDB
 This means you are ready to go!
 
 ## Backend Unit Tests
+
 1. Once the backend is set up properly and you see the proper output in the terminal it is time to test our routes. I have created some very simple unit tests that can be run in order to test this.
 2. Open another terminal window and navigate into the `chat-app-backend` directory. 
 4. Run the following command:
@@ -63,6 +75,7 @@ This will run some basic tests for creating and posting messages.
 All tests should pass if everything is set up properly!
 
 ## Frontend Setup
+
 The frontend setup is similar to the backend setup. Here are the steps:
 1. If not already there, navigate into the `chat-app-frontend` directory.
 2. Remove any residual files like `package-lock.json` and the `node_modules` directory.
@@ -81,6 +94,7 @@ npm start
 This will start our frontend server in order to access the web application which can be accessed at the following url: `localhost:3000`
 
 ## Additional Quality of Life Features
+
 1. Dark mode implementation through button at the top right of web page.
 2. Automatic scrolling of messages when there are more messages than can be displayed on the screen.
 3. Clean error handling in the `Post a New Message` modal.
