@@ -4,4 +4,4 @@
 .env
 # Compiled Files
 /dist
-package-lock.json
+/package-lock.json
