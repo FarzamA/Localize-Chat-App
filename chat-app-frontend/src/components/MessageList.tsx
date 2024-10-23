@@ -1,5 +1,4 @@
-// src/components/MessageList.tsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Message } from '../services/MessageService';
 import { Box, Typography } from '@mui/material';
 
@@ -8,6 +7,16 @@ interface MessageListProps {
 }
 
 export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+  // Create a ref to track the end of the message list
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
     <Box sx={{ mt: 2, maxHeight: '70vh', overflowY: 'auto' }}>
       {messages
@@ -22,6 +31,9 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
             </Typography>
           </Box>
         ))}
+
+      {/* Dummy div at the bottom to trigger scroll into view */}
+      <div ref={messagesEndRef} />
     </Box>
   );
 };
