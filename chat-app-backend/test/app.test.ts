@@ -29,7 +29,7 @@ describe('API Endpoints', () => {
       expect(res.body.name).toBe('Test User');
       expect(res.body.message).toBe('This is a test message');
 
-      // Clean up by deleting the created test message (if needed)
+      // Clean up by deleting the created test message 
       await request(BASE_URL)
         .delete(`/messages/${res.body._id}`);  
     });

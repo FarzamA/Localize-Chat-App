@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { io, Socket } from 'socket.io-client'; 
+import { io, Socket } from 'socket.io-client';  // Import socket.io-client
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -12,123 +12,129 @@ import { MessageModal } from './components/MessageModal';
 import Cookies from 'js-cookie';
 
 // Initialize the WebSocket connection
-const socket: Socket = io('http://localhost:5000');  
+const socket: Socket = io('http://localhost:5000');
 
 export const ChatApp: React.FC = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const messageService = new MessageService();
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const messageService = new MessageService();
 
-  // Retrieve the theme mode from the cookie (default to 'light')
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const cookieValue = Cookies.get('theme');
-    return cookieValue === 'dark';
-  });
-
-  // Toggle between light and dark modes and store the preference in a cookie
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    Cookies.set('theme', newMode ? 'dark' : 'light', { expires: 365 });
-  };
-
-  // Create theme based on the current mode
-  const theme = useMemo( // useMemo prevents expensive computations on each re render -- useful here
-    () =>
-      createTheme({
-        palette: {
-          mode: darkMode ? 'dark' : 'light',
-        },
-      }),
-    [darkMode],
-  );
-
-  // Fetch messages on component mount and listen for WebSocket events
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const fetchedMessages = await messageService.fetchMessages();
-      setMessages(fetchedMessages);
-    };
-    fetchMessages();
-
-    // Listen for new messages broadcasted by WebSocket
-    socket.on('message', (newMessage: Message) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);  // Add new message to chat
+    // Retrieve the theme mode from the cookie (default to 'light')
+    const [darkMode, setDarkMode] = useState<boolean>(() => {
+        const cookieValue = Cookies.get('theme');
+        return cookieValue === 'dark';
     });
 
-    // Cleanup WebSocket listener when component unmounts
-    return () => {
-      socket.off('message');
+    // Toggle between light and dark modes and store the preference in a cookie
+    const toggleDarkMode = () => {
+        const newMode = !darkMode;
+        setDarkMode(newMode);
+        Cookies.set('theme', newMode ? 'dark' : 'light', { expires: 365 });
     };
-  }, []);
 
-  // Handle posting a new message
-  const handleNewMessageSubmit = async (name: string, message: string) => {
-    try {
-      const newMessage = await messageService.postMessage(name, message);
-      setMessages([...messages, newMessage]);  // Update the state with the new message
-      setModalOpen(false);  // Close the modal after submitting the message
+    // Create theme based on the current mode
+    const theme = useMemo(
+        () =>
+            createTheme({
+            palette: {
+                mode: darkMode ? 'dark' : 'light',
+            },
+            }),
+        [darkMode],
+    );
 
-      // Emit the new message via WebSocket to other connected clients
-      socket.emit('newMessage', newMessage);
-    } catch (error) {
-      console.error('Failed to post the message');
-    }
-  };
+    // Function to check for duplicate messages based on the unique message ID
+    const isDuplicateMessage = (prevMessages: Message[], newMessage: Message) => {
+        return prevMessages.some((message) => message._id === newMessage._id);
+    };
 
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    // Fetch messages on component mount and listen for WebSocket events
+    useEffect(() => {
+        const fetchMessages = async () => {
+            const fetchedMessages = await messageService.fetchMessages();
+            setMessages(fetchedMessages);
+        };
+        fetchMessages();
 
-      <div>
-        {/* App Bar */}
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Chat App - Room 1
-            </Typography>
+        // Listen for new messages broadcasted by WebSocket
+        socket.on('message', (newMessage: Message) => 
+            // Prevent adding the message twice for the sender
+            // Issue happening here with duplication of messages for sender 
+            setMessages((prevMessages) => !isDuplicateMessage(prevMessages, newMessage) ? [...prevMessages, newMessage] : [...prevMessages])
+        );
+        // Cleanup WebSocket listener when component unmounts
+        return () => {
+            socket.off('message');
+        };
+    }, []);
 
-            {/* Light/Dark Mode Switch */}
-            <IconButton onClick={toggleDarkMode} color="inherit">
-              {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+    // Handle posting a new message
+    const handleNewMessageSubmit = async (name: string, message: string) => {
+        try {
+            const newMessage = await messageService.postMessage(name, message);
+            setMessages((prevMessages) => [...prevMessages, newMessage]);  // Update state with new message locally
+            setModalOpen(false);  // Close the modal after submitting the message
 
-        {/* Sidebar */}
-        <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+            // Emit the new message via WebSocket to other connected clients
+            socket.emit('newMessage', newMessage);
+        } catch (error) {
+            console.error('Failed to post the message');
+        }
+    };
 
-        {/* Message Display Area */}
-        <Container>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h4">Messages</Typography>
-            <MessageList messages={messages} />
-          </Box>
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
 
-          {/* Button to Open Modal for New Message */}
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ position: 'fixed', bottom: 16, right: 16 }}
-            onClick={() => setModalOpen(true)}
-          >
-            Post a New Message
-          </Button>
-        </Container>
+            <div>
+                {/* App Bar */}
+                <AppBar position="static">
+                    <Toolbar>
+                    <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                        Chat App - Room 1
+                    </Typography>
 
-        {/* Modal for New Message */}
-        <MessageModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onSubmit={handleNewMessageSubmit}
-        />
-      </div>
-    </ThemeProvider>
-  );
+                    {/* Light/Dark Mode Switch */}
+                    <IconButton onClick={toggleDarkMode} color="inherit">
+                        {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
+                    </Toolbar>
+                </AppBar>
+
+                {/* Sidebar */}
+                <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+                {/* Message Display Area */}
+                <Container>
+                    <Box sx={{ mt: 2 }}>
+                    <Typography variant="h4">Messages</Typography>
+                    <MessageList messages={messages} />
+                    </Box>
+
+                    {/* Button to Open Modal for New Message */}
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                    onClick={() => setModalOpen(true)}
+                    >
+                    Post a New Message
+                    </Button>
+                </Container>
+
+                {/* Modal for New Message */}
+                <MessageModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    onSubmit={handleNewMessageSubmit}
+                />
+            </div>
+        </ThemeProvider>
+    );
 };
 
 export default ChatApp;

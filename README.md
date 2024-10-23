@@ -95,7 +95,7 @@ This will start our frontend server in order to access the web application which
 
 ## Additional Quality of Life Features
 
-1. Dark mode implementation through button at the top right of web page.
+1. Dark mode implementation through button at the top right of web page - saved on page reload through cookies.
 2. Automatic scrolling of messages when there are more messages than can be displayed on the screen.
 3. Clean error handling in the `Post a New Message` modal.
 4. Responsive design with UX in mind.

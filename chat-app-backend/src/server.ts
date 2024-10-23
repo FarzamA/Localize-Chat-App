@@ -21,7 +21,7 @@ const mongoURI = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@
 // MongoDB Connection
 mongoose.connect(mongoURI)
   .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+    .catch((err) => console.error('MongoDB connection error:', err));
 
 // Use WebSocket to broadcast messages when a new one is created
 const messageService = new MessageService();
